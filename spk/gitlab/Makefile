@@ -1,15 +1,16 @@
 SPK_NAME = gitlab
 SPK_VERS = 7.1
 SPK_REV = 0
-SPK_ICON = src/debian.png
+SPK_ICON = src/gitlab.png
 DSM_UI_DIR = app
 
 DEPENDS  =
-SPK_DEPENDS = "python>2.7.3-3"
+SPK_DEPENDS = 
 
 MAINTAINER = SynoCommunity
-DESCRIPTION = Debian is a free operating system \(OS\) that comes with over 29000 packages, precompiled software bundled up in a nice format for easy installation on your DiskStation. Debian Chroot allows you to benefit from the Debian OS inside your DiskStation, alongside DSM. This package is intended for advanced users only.
-DESCRIPTION_FRE = Debian est un système d\\\'exploitation \\\(SE\\\) qui rend disponible plus de 29000 paquets, logiciels précompilés et empaquetés dans un joli format pour rendre son installation facile sur votre DiskStation. Debian Chroot vous permet de bénéficier du SE Debian au sein de votre DiskStation, aux cotés de DSM. Ce paquet est destiné aux utilisateurs avancés uniquement.
+DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. 
+Create projects and git repositories, manage access and do code reviews. 
+GitLab CE is on-premises software that you can install and use on your server\(s\).
 RELOAD_UI = yes
 DISPLAY_NAME = Gitlab
 CHANGELOG = ""
