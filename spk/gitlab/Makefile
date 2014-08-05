@@ -8,9 +8,7 @@ DEPENDS  =
 SPK_DEPENDS = 
 
 MAINTAINER = SynoCommunity
-DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. 
-Create projects and git repositories, manage access and do code reviews. 
-GitLab CE is on-premises software that you can install and use on your server\(s\).
+DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. Create projects and git repositories, manage access and do code reviews. GitLab CE is on-premises software that you can install and use on your server\(s\).
 RELOAD_UI = yes
 DISPLAY_NAME = Gitlab
 CHANGELOG = ""

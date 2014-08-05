@@ -29,7 +29,7 @@ postinst ()
         mount | grep -q "${CHROOTTARGET}/dev " || mount -o bind /dev ${CHROOTTARGET}/dev
         mount | grep -q "${CHROOTTARGET}/dev/pts " || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
 
-        ( 
+        { 
             chroot ${CHROOTTARGET}/ /debootstrap/debootstrap --second-stage && \
             mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list && \
             mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences && \
@@ -37,7 +37,7 @@ postinst ()
             chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh && \
             echo "All done!" && \
             touch ${INSTALL_DIR}/var/installed
-        ) | cat > ${INSTALL_DIR}/var/install.log 2&>1
+        } > ${INSTALL_DIR}/var/install.log 2>&1
 
         chmod 666 ${CHROOTTARGET}/dev/null
         chmod 666 ${CHROOTTARGET}/dev/tty
