@@ -21,12 +21,16 @@ start_daemon ()
         grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
         
         # Start all services
+        cp ${INSTALL_DIR}/etc/gitlab-httpd.conf /etc/httpd/sites-enabled-user/gitlab-httpd.conf
+        httpd -k restart
     fi
 }
 
 stop_daemon ()
 {
     # Stop running services
+    rm -f /etc/httpd/sites-enabled-user/gitlab-httpd.conf
+    httpd -k restart
 
     # Unmount
     umount ${CHROOTTARGET}/dev/pts

@@ -1,0 +1,20 @@
+# GitLab logrotate settings
+# based on: http://stackoverflow.com/a/4883967
+
+/var/services/homes/git/gitlab/log/*.log {
+    daily
+    missingok
+    rotate 90
+    compress
+    notifempty
+    copytruncate
+}
+
+/var/services/homes/git/gitlab-shell/gitlab-shell.log {
+    daily
+    missingok
+    rotate 90
+    compress
+    notifempty
+    copytruncate
+}
