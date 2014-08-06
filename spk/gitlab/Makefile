@@ -46,7 +46,7 @@ gitlab_extra_install:
 	install -m 644 src/preferences $(STAGING_DIR)/var/chroottarget/etc/apt/preferences.default
 	install -m 644 src/policy-rc.d $(STAGING_DIR)/var/chroottarget/usr/sbin/policy-rc.d
 	install -m 755 src/bootstrap.sh $(STAGING_DIR)/var/chroottarget/bootstrap.sh
-        install -m 755 -d $(STAGING_DIR)/var/chroottarget/etc/gitlab
+	install -m 755 -d $(STAGING_DIR)/var/chroottarget/etc/gitlab
 	install -m 644 src/cfg/gitlab.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.yml.default
 	install -m 644 src/cfg/application.rb.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/application.rb.default
 	install -m 644 src/cfg/unicorn.rb.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/unicorn.rb.default
