@@ -9,7 +9,7 @@ production:
   # username: git
   # password:
   # host: localhost
-  port: 15432 
+  port: ${POSTGRESQL_PORT} 
 
 #
 # Development specific

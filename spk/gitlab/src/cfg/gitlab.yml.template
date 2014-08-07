@@ -15,9 +15,9 @@ production: &base
   ## GitLab settings
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
-    host: localhost
-    port: 80
-    https: false
+    host: ${GITLAB_FQDN}
+    port: 443
+    https: true
 
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
@@ -26,14 +26,14 @@ production: &base
 
     # WARNING: See config/application.rb under "Relative url support" for the list of
     # other files that need to be changed for relative url support
-    relative_url_root: /gitlab
+    relative_url_root: ${GITLAB_RELATIVE_ROOT}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
-    # user: git
+    user: ${GITLAB_USER}
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: example@example.com
+    email_from: ${GITLAB_EMAIL_FROM}
 
     # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
 
@@ -196,7 +196,7 @@ production: &base
   # GitLab Satellites
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
-    path: /var/services/homes/git/gitlab-satellites/
+    path: ${GITLAB_USER_HOME}/gitlab-satellites/
 
   ## Backup settings
   backup:
@@ -205,11 +205,11 @@ production: &base
 
   ## GitLab Shell settings
   gitlab_shell:
-    path: /var/services/homes/git/gitlab-shell/
+    path: ${GITLAB_USER_HOME}/gitlab-shell/
 
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: /var/services/homes/git/repositories/
-    hooks_path: /var/services/homes/git/gitlab-shell/hooks/
+    repos_path: ${GITLAB_USER_HOME}/repositories/
+    hooks_path: ${GITLAB_USER_HOME}/gitlab-shell/hooks/
 
     # Git over HTTP
     upload_pack: true

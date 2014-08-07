@@ -1,7 +1,7 @@
 # GitLab logrotate settings
 # based on: http://stackoverflow.com/a/4883967
 
-/var/services/homes/git/gitlab/log/*.log {
+${GITLAB_ROOT}/log/*.log {
     daily
     missingok
     rotate 90
@@ -10,7 +10,7 @@
     copytruncate
 }
 
-/var/services/homes/git/gitlab-shell/gitlab-shell.log {
+${GITLAB_USER_HOME}/gitlab-shell/gitlab-shell.log {
     daily
     missingok
     rotate 90

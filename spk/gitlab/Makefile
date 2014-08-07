@@ -41,20 +41,21 @@ include ../../mk/spksrc.spk.mk
 .PHONY: gitlab_extra_install
 gitlab_extra_install: 
 	install -m 755 -d $(STAGING_DIR)/var
-	install -m 755 -d $(STAGING_DIR)/etc
 	debootstrap --foreign --arch $(DEBIAN_ARCH) wheezy $(STAGING_DIR)/var/chroottarget "http://ftp.debian.org/debian"
 	install -m 644 src/sources.list $(STAGING_DIR)/var/chroottarget/etc/apt/sources.list.default
 	install -m 644 src/preferences $(STAGING_DIR)/var/chroottarget/etc/apt/preferences.default
 	install -m 644 src/policy-rc.d $(STAGING_DIR)/var/chroottarget/usr/sbin/policy-rc.d
 	install -m 755 src/bootstrap.sh $(STAGING_DIR)/var/chroottarget/bootstrap.sh
+	install -m 755 src/bootstrap_variables.sh $(STAGING_DIR)/var/chroottarget/bootstrap_variables.sh
 	install -m 755 -d $(STAGING_DIR)/var/chroottarget/etc/gitlab
-	install -m 644 src/cfg/gitlab.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.yml.default
-	install -m 644 src/cfg/application.rb.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/application.rb.default
-	install -m 644 src/cfg/unicorn.rb.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/unicorn.rb.default
-	install -m 644 src/cfg/database.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/database.yml.default
-	install -m 644 src/cfg/resque.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/resque.yml.default
-	install -m 644 src/cfg/gitlab.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.default
-	install -m 644 src/cfg/logrotate.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/logrotate.default
-	install -m 644 src/cfg/nginx.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/nginx.default
-	install -m 644 src/cfg/gitlab-httpd.conf $(STAGING_DIR)/etc/gitlab-httpd.conf
+	install -m 644 src/cfg/gitlab.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.yml.template
+	install -m 644 src/cfg/application.rb.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/application.rb.template
+	install -m 644 src/cfg/unicorn.rb.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/unicorn.rb.template
+	install -m 644 src/cfg/resque.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/resque.yml.template
+	install -m 644 src/cfg/database.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/database.yml.template
+	install -m 644 src/cfg/shell_config.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/shell_config.yml.template
+	install -m 644 src/cfg/gitlab.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.template
+	install -m 644 src/cfg/logrotate.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/logrotate.template
+	install -m 644 src/cfg/nginx.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/nginx.template
+	install -m 644 src/cfg/gitlab-httpd-proxy.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab-httpd-proxy.template
 

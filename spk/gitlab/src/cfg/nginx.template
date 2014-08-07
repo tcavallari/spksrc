@@ -16,14 +16,14 @@
 # [2] https://github.com/agentzh/chunkin-nginx-module
 
 upstream gitlab {
-  server unix:/var/services/homes/git/gitlab/tmp/sockets/gitlab.socket;
+  server unix:${GITLAB_ROOT}/tmp/sockets/gitlab.socket;
 }
 
 server {
-  listen *:10080 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
-  server_name vision.deis.unibo.it;     # e.g., server_name source.example.com;
+  listen localhost:${NGINX_PORT} default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
+  server_name ${GITLAB_FQDN};     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
-  root /var/services/homes/git/gitlab/public;
+  root ${GITLAB_ROOT}/public;
   
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
@@ -65,7 +65,7 @@ server {
   # See config/application.rb under "Relative url support" for the list of
   # other files that need to be changed for relative url support
   #location ~ ^/(assets)/  {
-  #  root /home/git/gitlab/public;
+  #  root ${GITLAB_ROOT}/public;
   #  gzip_static on; # to serve pre-gzipped version
   #  expires max;
   #  add_header Cache-Control public;

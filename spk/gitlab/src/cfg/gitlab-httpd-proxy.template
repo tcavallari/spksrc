@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteCond %{SERVER_PORT} 80
+RewriteRule ^${GITLAB_RELATIVE_ROOT}/?(.*) https://%{SERVER_NAME}${GITLAB_RELATIVE_ROOT}/$1 [R,L]
+
+<Location ${GITLAB_RELATIVE_ROOT}>
+  SetEnv no-gzip 1
+
+  ProxyPass http://localhost:${NGINX_PORT}${GITLAB_RELATIVE_ROOT}
+  ProxyPassReverse http://localhost:${NGINX_PORT}${GITLAB_RELATIVE_ROOT}
+</Location>

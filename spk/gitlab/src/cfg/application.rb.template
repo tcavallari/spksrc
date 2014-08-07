@@ -62,7 +62,7 @@ module Gitlab
     #
     # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
     #
-    config.relative_url_root = "/gitlab"
+    config.relative_url_root = "${GITLAB_RELATIVE_ROOT}"
 
     config.middleware.use Rack::Attack
 
