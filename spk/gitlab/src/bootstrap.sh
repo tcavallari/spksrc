@@ -24,10 +24,11 @@ dpkg-reconfigure -f noninteractive tzdata
 echo Installing dependencies...
 aptitude install -y sudo vim nano git-core gettext
 aptitude install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils
+service redis-server stop
 
 sed -i "s/^\([[:space:]]*port[[:space:]]*\)[[:digit:]][[:digit:]]*\(.*\)$/\1${REDIS_PORT}\2/" /etc/redis/redis.conf
 
-service redis-server restart
+service redis-server start
 
 echo Building ruby...
 aptitude remove -y ruby1.8
@@ -50,9 +51,11 @@ CREATE DATABASE gitlabhq_production OWNER git;
 \q
 END
 
+service postgresql stop
+
 sed -i "s/^\([[:space:]]*port[[:space:]]*=[[:space:]]*\)[[:digit:]][[:digit:]]*\(.*\)$/\1${POSTGRESQL_PORT}\2/" /etc/postgresql/9.1/main/postgresql.conf
 
-service postgresql restart
+service postgresql start
 
 echo Installing Gitlab...
 cd ${GITLAB_USER_HOME}
