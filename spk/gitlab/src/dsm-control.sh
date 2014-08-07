@@ -21,6 +21,11 @@ start_daemon ()
         grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
         
         # Start all services
+        chroot ${CHROOTTARGET}/ service postgresql start
+        chroot ${CHROOTTARGET}/ service redis-server start
+        chroot ${CHROOTTARGET}/ service gitlab start
+        chroot ${CHROOTTARGET}/ service nginx start
+
         cp ${INSTALL_DIR}/etc/gitlab-httpd.conf /etc/httpd/sites-enabled-user/gitlab-httpd.conf
         httpd -k restart
     fi
@@ -31,6 +36,11 @@ stop_daemon ()
     # Stop running services
     rm -f /etc/httpd/sites-enabled-user/gitlab-httpd.conf
     httpd -k restart
+
+    chroot ${CHROOTTARGET}/ service nginx stop
+    chroot ${CHROOTTARGET}/ service gitlab stop
+    chroot ${CHROOTTARGET}/ service redis-server stop
+    chroot ${CHROOTTARGET}/ service postgresql stop
 
     # Unmount
     umount ${CHROOTTARGET}/dev/pts
