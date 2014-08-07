@@ -6,10 +6,11 @@ DNAME="Gitlab"
 
 # Others
 INSTALL_DIR="/usr/local/${PACKAGE}"
-CHROOTTARGET="${INSTALL_DIR}/var/chroottarget"
+CHROOTTARGET=`realpath ${SYNOPKG_PKGDEST}/var/chroottarget`
 PATH="${INSTALL_DIR}/bin:${INSTALL_DIR}/env/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin"
 CHROOT_PATH="/usr/local/bin:/usr/bin:/bin"
 TMP_DIR="${SYNOPKG_PKGDEST}/../../@tmp"
+VARIABLES_FILE=${CHROOTTARGET}/bootstrap_variables.sh
 
 preinst ()
 {
@@ -23,25 +24,48 @@ postinst ()
 
     # Debootstrap second stage in the background and configure the chroot environment
     if [ "${SYNOPKG_PKG_STATUS}" != "UPGRADE" ]; then
+        # Create user if necessary
+        if ! id "${wizard_gitlab_user}"; then
+            # Empty password, no shell set, this has to be fixed manually
+            synouser --add "${wizard_gitlab_user}" "" "GitLab" 0 "" 0
+        fi
+
+        REAL_HOME=`realpath /var/services/homes/"${wizard_gitlab_user}"`
+        # The home folder must exist
+        if [ ! -d ${REAL_HOME} ]; then
+            exit 1
+        fi
+        # Prepare variables file
+        echo export GITLAB_USER="${wizard_gitlab_user}" >> ${VARIABLES_FILE}
+        echo export GITLAB_USER_UID=`id -u "${wizard_gitlab_user}"` >> ${VARIABLES_FILE}
+        echo export GITLAB_USER_HOME="${REAL_HOME}" >> ${VARIABLES_FILE}
+        echo export GITLAB_EMAIL_FROM="${wizard_gitlab_email_from}" >> ${VARIABLES_FILE}
+        echo export GITLAB_FQDN="${wizard_gitlab_fqdn}" >> ${VARIABLES_FILE}
+        echo export GITLAB_RELATIVE_ROOT="${wizard_gitlab_relative_root}" >> ${VARIABLES_FILE}
+
         # Make sure we don't mount twice
-        mount | grep -q "${CHROOTTARGET}/proc " || mount -t proc proc ${CHROOTTARGET}/proc
-        mount | grep -q "${CHROOTTARGET}/sys " || mount -t sysfs sys ${CHROOTTARGET}/sys
-        mount | grep -q "${CHROOTTARGET}/dev " || mount -o bind /dev ${CHROOTTARGET}/dev
-        mount | grep -q "${CHROOTTARGET}/dev/pts " || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
+        grep -q "${CHROOTTARGET}/proc " /proc/mounts || mount -t proc proc ${CHROOTTARGET}/proc
+        grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
+        grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
+        grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
 
-        { 
-            chroot ${CHROOTTARGET}/ /debootstrap/debootstrap --second-stage && \
-            mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list && \
-            mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences && \
-            cp /etc/hosts /etc/hostname /etc/resolv.conf ${CHROOTTARGET}/etc/ && \
-            chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh && \
-            echo "All done!" && \
+        ( 
+            set -e
+            # Finish bootstrapping
+            chroot ${CHROOTTARGET}/ /debootstrap/debootstrap --second-stage
+            chmod 666 ${CHROOTTARGET}/dev/null
+            chmod 666 ${CHROOTTARGET}/dev/tty
+            chmod 777 ${CHROOTTARGET}/tmp
+            mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list
+            mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences
+            cp /etc/hosts /etc/hostname /etc/resolv.conf ${CHROOTTARGET}/etc/
+
+            # Setup Gitlab and dependencies
+            chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh
+            echo "All done!"
+
             touch ${INSTALL_DIR}/var/installed
-        } > ${INSTALL_DIR}/var/install.log 2>&1
-
-        chmod 666 ${CHROOTTARGET}/dev/null
-        chmod 666 ${CHROOTTARGET}/dev/tty
-        chmod 777 ${CHROOTTARGET}/tmp
+        ) > ${INSTALL_DIR}/var/install.log 2>&1
 
         # Unmount
         umount ${CHROOTTARGET}/dev/pts

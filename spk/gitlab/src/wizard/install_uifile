@@ -1,0 +1,37 @@
+[{
+    "step_title": "Configure GitLab Installation",
+    "items": [{
+        "type": "textfield",
+        "desc": "Insert the required information",
+        "subitems": [{
+            "key": "wizard_gitlab_user",
+            "desc": "Username",
+            "defaultValue": "git",
+            "validator": {
+                "allowBlank": false
+            }
+        }, {
+            "key": "wizard_gitlab_email_from",
+            "desc": "Email address",
+            "defaultValue": "example@example.com",
+            "validator": {
+                "allowBlank": false,
+                "vtype": "email"
+            }
+        }, {
+            "key": "wizard_gitlab_fqdn",
+            "desc": "Gitlab Hostname",
+            "defaultValue": "localhost",
+            "validator": {
+                "allowBlank": false
+            }
+        }, {
+            "key": "wizard_gitlab_relative_root",
+            "desc": "Gitlab Relative Root",
+            "defaultValue": "/gitlab",
+            "validator": {
+                "allowBlank": false
+            }
+        }]
+    }]
+}]

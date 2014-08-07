@@ -17,6 +17,7 @@ HOMEPAGE   = https://about.gitlab.com/
 LICENSE    =
 HELPURL    = http://synocommunity.com/help/gitlab
 
+WIZARDS_DIR = src/wizard/
 INSTALLER_SCRIPT = src/installer.sh
 SSS_SCRIPT       = src/dsm-control.sh
 
