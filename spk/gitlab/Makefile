@@ -48,7 +48,7 @@ gitlab_extra_install:
 	install -m 755 src/bootstrap.sh $(STAGING_DIR)/var/chroottarget/bootstrap.sh
 	install -m 755 src/bootstrap_variables.sh $(STAGING_DIR)/var/chroottarget/bootstrap_variables.sh
 	install -m 755 -d $(STAGING_DIR)/var/chroottarget/etc/gitlab
-	install -m 644 src/cfg/gitlab.yml.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.yml.template
+	install -m 644 src/cfg/gitlab.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.yml.template
 	install -m 644 src/cfg/application.rb.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/application.rb.template
 	install -m 644 src/cfg/unicorn.rb.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/unicorn.rb.template
 	install -m 644 src/cfg/resque.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/resque.yml.template
