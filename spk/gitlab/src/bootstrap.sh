@@ -46,8 +46,8 @@ adduser --disabled-login --gecos "GitLab" --home ${GITLAB_USER_HOME} --uid ${GIT
 echo Installing PostgreSql
 aptitude install -y postgresql-9.1 postgresql-client libpq-dev
 sudo -u postgres psql -d template1 <<END
-CREATE USER git CREATEDB;
-CREATE DATABASE gitlabhq_production OWNER git;
+CREATE USER ${GITLAB_USER} CREATEDB;
+CREATE DATABASE gitlabhq_production OWNER ${GITLAB_USER};
 \q
 END
 
