@@ -35,7 +35,7 @@ postinst ()
     # Debootstrap second stage in the background and configure the chroot environment
     if [ "${SYNOPKG_PKG_STATUS}" != "UPGRADE" ]; then
         # Create user if necessary
-        if ! id "${wizard_gitlab_user}"; then
+        if ! id "${wizard_gitlab_user}" > /dev/null 2>&1; then
             # Empty password
             synouser --add "${wizard_gitlab_user}" "" "GitLab" 0 "" 0
             # Disable password login
@@ -61,12 +61,6 @@ postinst ()
         echo export GITLAB_FQDN="${wizard_gitlab_fqdn}" >> ${VARIABLES_FILE}
         echo export GITLAB_RELATIVE_ROOT="${wizard_gitlab_relative_root}" >> ${VARIABLES_FILE}
 
-        # Make sure we don't mount twice
-        grep -q "${CHROOTTARGET}/proc " /proc/mounts || mount -t proc proc ${CHROOTTARGET}/proc
-        grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
-        grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
-        grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
-
         ( 
             set -e
             # Finish bootstrapping
@@ -77,6 +71,12 @@ postinst ()
             mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list
             mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences
             cp /etc/hosts /etc/hostname /etc/resolv.conf ${CHROOTTARGET}/etc/
+
+            # Make sure we don't mount twice
+            grep -q "${CHROOTTARGET}/proc " /proc/mounts || mount -t proc proc ${CHROOTTARGET}/proc
+            grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
+            grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
+            grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
 
             # Setup Gitlab and dependencies
             chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh
