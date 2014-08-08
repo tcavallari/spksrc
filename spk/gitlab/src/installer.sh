@@ -99,6 +99,9 @@ postinst ()
 
 preuninst ()
 {
+    # Not really necessary but here as a precaution.
+    source ${VARIABLES_FILE}
+    umount ${CHROOTTARGET}${GITLAB_USER_HOME}
     exit 0
 }
 

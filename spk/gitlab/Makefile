@@ -5,7 +5,7 @@ SPK_ICON = src/gitlab.png
 DSM_UI_DIR = app
 
 DEPENDS  =
-SPK_DEPENDS = 'ruby>2.0'
+SPK_DEPENDS = 'ruby>=2.0.0'
 
 MAINTAINER = SynoCommunity
 DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. Create projects and git repositories, manage access and do code reviews. GitLab CE is on-premises software that you can install and use on your server\(s\).
