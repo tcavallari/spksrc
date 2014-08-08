@@ -56,6 +56,7 @@ postinst ()
         echo export GITLAB_USER="${wizard_gitlab_user}" >> ${VARIABLES_FILE}
         echo export GITLAB_USER_UID=`id -u "${wizard_gitlab_user}"` >> ${VARIABLES_FILE}
         echo export GITLAB_USER_HOME="${REAL_HOME}" >> ${VARIABLES_FILE}
+        echo 'export GITLAB_ROOT=${GITLAB_USER_HOME}/gitlab' >> ${VARIABLES_FILE}
         echo export GITLAB_EMAIL_FROM="${wizard_gitlab_email_from}" >> ${VARIABLES_FILE}
         echo export GITLAB_FQDN="${wizard_gitlab_fqdn}" >> ${VARIABLES_FILE}
         echo export GITLAB_RELATIVE_ROOT="${wizard_gitlab_relative_root}" >> ${VARIABLES_FILE}
