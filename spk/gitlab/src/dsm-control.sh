@@ -9,6 +9,8 @@ INSTALL_DIR="/usr/local/${PACKAGE}"
 PATH="${INSTALL_DIR}/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin"
 CHROOTTARGET=`realpath ${INSTALL_DIR}/var/chroottarget`
 
+VARIABLES_FILE=${CHROOTTARGET}/bootstrap_variables.sh
+source ${VARIABLES_FILE}
 
 start_daemon ()
 {
@@ -19,6 +21,7 @@ start_daemon ()
         grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
         grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
         grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
+        grep -q "${CHROOTTARGET}${GITLAB_USER_HOME} " /proc/mounts || mount -o bind ${GITLAB_USER_HOME} ${CHROOTTARGET}${GITLAB_USER_HOME}
         
         # Start all services
         chroot ${CHROOTTARGET}/ service postgresql start
@@ -47,6 +50,7 @@ stop_daemon ()
     umount ${CHROOTTARGET}/dev
     umount ${CHROOTTARGET}/sys
     umount ${CHROOTTARGET}/proc
+    umount ${CHROOTTARGET}${GITLAB_USER_HOME}
 }
 
 daemon_status ()
