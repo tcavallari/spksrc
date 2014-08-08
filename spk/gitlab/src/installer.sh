@@ -18,7 +18,7 @@ preinst ()
     if [ "${SYNOPKG_PKG_STATUS}" = "INSTALL" ]; then
         for usr in root admin guest; do
             if [ "${wizard_gitlab_user}" = "$usr" ]; then
-                echo "Username not allowed"
+                echo "Usernames root, admin and guest are not allowed."
                 exit 1
             fi
         done
@@ -39,11 +39,13 @@ postinst ()
             # Empty password
             synouser --add "${wizard_gitlab_user}" "" "GitLab" 0 "" 0
             # Disable password login
-            sed 's_^\('"${wizard_gitlab_user}"':\)[^:]*\(:.*\)$_\1*\2_' /etc/shadow > ${SYNOPKG_PKGDEST}/tmp_shadow
+            cp -p /etc/shadow /etc/shadow.bak
+            sed -i 's_^\('"${wizard_gitlab_user}"':\)[^:]*\(:.*\)$_\1*\2_' /etc/shadow
         fi
         
         # Set the shell to /bin/sh if it was /sbin/nologin
-        sed 's_^\('"${wizard_gitlab_user}"':[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\)/sbin/nologin$_\1/bin/sh_' /etc/passwd > ${SYNOPKG_PKGDEST}/tmp_passwd
+        cp -p /etc/passwd /etc/passwd.bak
+        sed -i 's_^\('"${wizard_gitlab_user}"':[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\)/sbin/nologin$_\1/bin/sh_' /etc/passwd
 
         REAL_HOME=`realpath /var/services/homes/"${wizard_gitlab_user}"`
         # The home folder must exist
