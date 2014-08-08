@@ -14,6 +14,16 @@ VARIABLES_FILE=${CHROOTTARGET}/bootstrap_variables.sh
 
 preinst ()
 {
+    # Check provided username
+    if [ "${SYNOPKG_PKG_STATUS}" = "INSTALL" ]; then
+        for usr in root admin guest; do
+            if [ "${wizard_gitlab_user}" = "$usr" ]; then
+                echo "Username not allowed"
+                exit 1
+            fi
+        done
+    fi
+    
     exit 0
 }
 
@@ -26,9 +36,14 @@ postinst ()
     if [ "${SYNOPKG_PKG_STATUS}" != "UPGRADE" ]; then
         # Create user if necessary
         if ! id "${wizard_gitlab_user}"; then
-            # Empty password, no shell set, this has to be fixed manually
+            # Empty password
             synouser --add "${wizard_gitlab_user}" "" "GitLab" 0 "" 0
+            # Disable password login
+            sed 's_^\('"${wizard_gitlab_user}"':\)[^:]*\(:.*\)$_\1*\2_' /etc/shadow > ${SYNOPKG_PKGDEST}/tmp_shadow
         fi
+        
+        # Set the shell to /bin/sh if it was /sbin/nologin
+        sed 's_^\('"${wizard_gitlab_user}"':[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:\)/sbin/nologin$_\1/bin/sh_' /etc/passwd > ${SYNOPKG_PKGDEST}/tmp_passwd
 
         REAL_HOME=`realpath /var/services/homes/"${wizard_gitlab_user}"`
         # The home folder must exist
