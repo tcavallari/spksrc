@@ -77,6 +77,8 @@ postinst ()
             grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
             grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
             grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
+            
+            mkdir -p "${CHROOTTARGET}${REAL_HOME}"
             grep -q "${CHROOTTARGET}${REAL_HOME} " /proc/mounts || mount -o bind ${REAL_HOME} ${CHROOTTARGET}${REAL_HOME}
 
             # Setup Gitlab and dependencies
