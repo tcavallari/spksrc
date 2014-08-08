@@ -95,7 +95,7 @@ sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
 
 echo Installing gems...
 cd ${GITLAB_ROOT}
-sudo -u ${GITLAB_USER} -H bundle install --deployment --without development test mysql aws
+sudo -u ${GITLAB_USER} -H bundle install --jobs 3 --deployment --without development test mysql aws
 
 echo Installing Gitlab shell...
 cd ${GITLAB_ROOT}
