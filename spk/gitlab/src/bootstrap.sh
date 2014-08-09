@@ -104,7 +104,7 @@ sudo -u ${GITLAB_USER} -H git config --global core.autocrlf input
 
 echo Installing gems...
 cd ${GITLAB_ROOT}
-sudo -u ${GITLAB_USER} -H bundle install --jobs 3 --deployment --without development test mysql aws
+sudo -u ${GITLAB_USER} -H bundle install --deployment --without development test mysql aws
 
 echo Installing Gitlab shell...
 cd ${GITLAB_ROOT}
@@ -113,7 +113,7 @@ sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:shell:install[v1.9.6] REDIS_UR
 envsubst "$GITLAB_ALL_VARIABLE_NAMES" < /etc/gitlab/shell_config.yml.template > /etc/gitlab/shell_config.yml.default
 sudo -u ${GITLAB_USER} -H cp /etc/gitlab/shell_config.yml.default ${GITLAB_USER_HOME}/gitlab-shell/config.yml
 
-# Chenge gitlab-shell shebang to work both inside and outside the chroot
+# Change gitlab-shell shebang to work both inside and outside the chroot
 sed -i 's_#!/usr/bin/env ruby_#!/usr/local/gitlab/bin/ruby_' ${GITLAB_USER_HOME}/gitlab-shell/bin/*
 
 echo Populating database...
