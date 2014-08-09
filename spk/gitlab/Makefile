@@ -4,8 +4,8 @@ SPK_REV = 0
 SPK_ICON = src/gitlab.png
 DSM_UI_DIR = app
 
-DEPENDS  =
-SPK_DEPENDS = 'ruby>=2.0.0'
+DEPENDS  = cross/redis cross/ruby
+SPK_DEPENDS = 
 
 MAINTAINER = SynoCommunity
 DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. Create projects and git repositories, manage access and do code reviews. GitLab CE is on-premises software that you can install and use on your server\(s\).
@@ -23,7 +23,6 @@ SSS_SCRIPT       = src/dsm-control.sh
 
 INSTALL_PREFIX = /usr/local/$(SPK_NAME)
 
-COPY_TARGET = nop
 POST_STRIP_TARGET = gitlab_extra_install
 
 DEBIAN_ARCH =
@@ -54,6 +53,7 @@ gitlab_extra_install:
 	install -m 644 src/cfg/unicorn.rb.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/unicorn.rb.template
 	install -m 644 src/cfg/resque.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/resque.yml.template
 	install -m 644 src/cfg/database.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/database.yml.template
+	install -m 644 src/cfg/smtp_settings.rb.default $(STAGING_DIR)/var/chroottarget/etc/gitlab/smtp_settings.rb.default
 	install -m 644 src/cfg/shell_config.yml.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/shell_config.yml.template
 	install -m 644 src/cfg/gitlab.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/gitlab.template
 	install -m 644 src/cfg/logrotate.template $(STAGING_DIR)/var/chroottarget/etc/gitlab/logrotate.template

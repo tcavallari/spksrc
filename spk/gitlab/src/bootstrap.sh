@@ -28,6 +28,10 @@ service redis-server stop
 
 sed -i "s/^\([[:space:]]*port[[:space:]]*\)[[:digit:]][[:digit:]]*\(.*\)$/\1${REDIS_PORT}\2/" /etc/redis/redis.conf
 
+# To have redis-cli also available in the same path as outside the chroot (used in gitlab-shell)
+mkdir -p /usr/local/gitlab/bin
+ln -s /usr/bin/redis-cli /usr/local/gitlab/bin/redis-cli
+
 service redis-server start
 
 echo Building ruby...
@@ -38,6 +42,9 @@ cd ruby-2.1.2/
 ./configure --disable-install-rdoc
 make -j3
 make install
+
+ln -s /usr/local/bin/ruby /usr/local/gitlab/bin/ruby
+
 gem install bundler --no-ri --no-rdoc
 
 echo Creating git user...
@@ -75,6 +82,8 @@ sudo -u ${GITLAB_USER} -H cp /etc/gitlab/unicorn.rb.default config/unicorn.rb
 envsubst "$GITLAB_ALL_VARIABLE_NAMES" < /etc/gitlab/resque.yml.template > /etc/gitlab/resque.yml.default
 sudo -u ${GITLAB_USER} -H cp /etc/gitlab/resque.yml.default config/resque.yml
 
+sudo -u ${GITLAB_USER} -H cp /etc/gitlab/smtp_settings.rb.default config/initializers/smtp_settings.rb
+
 sudo -u ${GITLAB_USER} -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
 envsubst "$GITLAB_ALL_VARIABLE_NAMES" < /etc/gitlab/database.yml.template > /etc/gitlab/database.yml.default
@@ -103,6 +112,9 @@ sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:shell:install[v1.9.6] REDIS_UR
 
 envsubst "$GITLAB_ALL_VARIABLE_NAMES" < /etc/gitlab/shell_config.yml.template > /etc/gitlab/shell_config.yml.default
 sudo -u ${GITLAB_USER} -H cp /etc/gitlab/shell_config.yml.default ${GITLAB_USER_HOME}/gitlab-shell/config.yml
+
+# Chenge gitlab-shell shebang to work both inside and outside the chroot
+sed -i 's_#!/usr/bin/env ruby_#!/usr/local/gitlab/bin/ruby_' ${GITLAB_USER_HOME}/gitlab-shell/bin/*
 
 echo Populating database...
 sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:setup RAILS_ENV=production <<END

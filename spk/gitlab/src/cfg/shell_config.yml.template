@@ -22,7 +22,7 @@ auth_file: "${GITLAB_USER_HOME}/.ssh/authorized_keys"
 
 # Redis settings used for pushing commit notices to gitlab
 redis:
-  bin: /usr/bin/redis-cli
+  bin: /usr/local/gitlab/bin/redis-cli
   host: 127.0.0.1
   port: ${REDIS_PORT}
   # socket: /tmp/redis.socket # Only define this if you want to use sockets
