@@ -2,7 +2,7 @@
 user: ${GITLAB_USER}
 
 # Url to gitlab instance. Used for api calls. Should end with a slash.
-gitlab_url: "https://localhost${GITLAB_RELATIVE_ROOT}/"
+gitlab_url: "http://localhost:${NGINX_PORT}${GITLAB_RELATIVE_ROOT}/"
 
 http_settings:
 #  user: someone
