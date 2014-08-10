@@ -48,7 +48,7 @@ listen "127.0.0.1:${UNICORN_PORT}", :tcp_nopush => true
 #
 # For more information see http://stackoverflow.com/a/21682112/752049
 #
-timeout 30
+timeout 300
 
 # feel free to point this anywhere accessible on the filesystem
 pid "${GITLAB_ROOT}/tmp/pids/unicorn.pid"
