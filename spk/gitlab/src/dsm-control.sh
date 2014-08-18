@@ -102,10 +102,16 @@ case $1 in
         chroot ${CHROOTTARGET}/ /bin/bash
         ;;
     backup)
-        chroot ${CHROOTTARGET}/ /bin/bash <<END
-            cd ${GITLAB_ROOT}
-            sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+        if daemon_status; then
+            chroot ${CHROOTTARGET}/ /bin/bash <<END
+                cd ${GITLAB_ROOT}
+                sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 END
+            exit 0
+        else
+            echo ${DNAME} is not running...
+            exit 1
+        fi
         ;;        
     *)
         exit 1
