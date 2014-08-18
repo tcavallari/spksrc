@@ -55,7 +55,16 @@ stop_daemon ()
 
 daemon_status ()
 {
-    [ -f ${INSTALL_DIR}/var/installed ] && `grep -q "${CHROOTTARGET}/proc " /proc/mounts` && `grep -q "${CHROOTTARGET}/sys " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts` && `grep -q "${CHROOTTARGET}${GITLAB_USER_HOME} " /proc/mounts` && `chroot ${CHROOTTARGET}/ service nginx status` && `chroot ${CHROOTTARGET}/ service gitlab status` && `chroot ${CHROOTTARGET}/ service redis-server status` && `chroot ${CHROOTTARGET}/ service postgresql status`
+    [ -f ${INSTALL_DIR}/var/installed ] && \
+    grep -q "${CHROOTTARGET}/proc " /proc/mounts && \
+    grep -q "${CHROOTTARGET}/sys " /proc/mounts && \
+    grep -q "${CHROOTTARGET}/dev " /proc/mounts && \
+    grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts && \
+    grep -q "${CHROOTTARGET}${GITLAB_USER_HOME} " /proc/mounts && \
+    chroot ${CHROOTTARGET}/ service nginx status && \
+    chroot ${CHROOTTARGET}/ service gitlab status && \
+    chroot ${CHROOTTARGET}/ service redis-server status && \
+    chroot ${CHROOTTARGET}/ service postgresql status
 }
 
 
@@ -92,6 +101,12 @@ case $1 in
     chroot)
         chroot ${CHROOTTARGET}/ /bin/bash
         ;;
+    backup)
+        chroot ${CHROOTTARGET}/ /bin/bash <<END
+            cd ${GITLAB_ROOT}
+            sudo -u ${GITLAB_USER} -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+END
+        ;;        
     *)
         exit 1
         ;;
