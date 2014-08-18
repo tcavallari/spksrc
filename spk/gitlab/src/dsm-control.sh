@@ -55,7 +55,7 @@ stop_daemon ()
 
 daemon_status ()
 {
-    `grep -q "${CHROOTTARGET}/proc " /proc/mounts` && `grep -q "${CHROOTTARGET}/sys " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts`
+    [ -f ${INSTALL_DIR}/var/installed ] && `grep -q "${CHROOTTARGET}/proc " /proc/mounts` && `grep -q "${CHROOTTARGET}/sys " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev " /proc/mounts` && `grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts` && `grep -q "${CHROOTTARGET}${GITLAB_USER_HOME} " /proc/mounts` && `chroot ${CHROOTTARGET}/ service nginx status` && `chroot ${CHROOTTARGET}/ service gitlab status` && `chroot ${CHROOTTARGET}/ service redis-server status` && `chroot ${CHROOTTARGET}/ service postgresql status`
 }
 
 
