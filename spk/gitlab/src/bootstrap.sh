@@ -65,6 +65,9 @@ sed -i "s/^\([[:space:]]*port[[:space:]]*=[[:space:]]*\)[[:digit:]][[:digit:]]*\
 service postgresql start
 
 echo Installing Gitlab...
+# cleanup a potential previous installation
+rm -rf ${GITLAB_USER_HOME}/gitlab ${GITLAB_USER_HOME}/gitlab-satellites ${GITLAB_USER_HOME}/gitlab-shell
+
 cd ${GITLAB_USER_HOME}
 sudo -u ${GITLAB_USER} -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-1-stable gitlab
 
