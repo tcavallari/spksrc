@@ -61,39 +61,43 @@ postinst ()
         echo export GITLAB_FQDN="${wizard_gitlab_fqdn}" >> ${VARIABLES_FILE}
         echo export GITLAB_RELATIVE_ROOT="${wizard_gitlab_relative_root}" >> ${VARIABLES_FILE}
 
-        ( 
-            set -e
-            # Finish bootstrapping
-            chroot ${CHROOTTARGET}/ /debootstrap/debootstrap --second-stage
-            chmod 666 ${CHROOTTARGET}/dev/null
-            chmod 666 ${CHROOTTARGET}/dev/tty
-            chmod 777 ${CHROOTTARGET}/tmp
-            mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list
-            mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences
-            cp /etc/hosts /etc/hostname /etc/resolv.conf ${CHROOTTARGET}/etc/
+        # Subshell to install in background
+        (
+            # Subshell where any error aborts the setup
+            ( 
+                set -e
+                # Finish bootstrapping
+                chroot ${CHROOTTARGET}/ /debootstrap/debootstrap --second-stage
+                chmod 666 ${CHROOTTARGET}/dev/null
+                chmod 666 ${CHROOTTARGET}/dev/tty
+                chmod 777 ${CHROOTTARGET}/tmp
+                mv ${CHROOTTARGET}/etc/apt/sources.list.default ${CHROOTTARGET}/etc/apt/sources.list
+                mv ${CHROOTTARGET}/etc/apt/preferences.default ${CHROOTTARGET}/etc/apt/preferences
+                cp /etc/hosts /etc/hostname /etc/resolv.conf ${CHROOTTARGET}/etc/
 
-            # Make sure we don't mount twice
-            grep -q "${CHROOTTARGET}/proc " /proc/mounts || mount -t proc proc ${CHROOTTARGET}/proc
-            grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
-            grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
-            grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
-            
-            mkdir -p "${CHROOTTARGET}${REAL_HOME}"
-            grep -q "${CHROOTTARGET}${REAL_HOME} " /proc/mounts || mount -o bind ${REAL_HOME} ${CHROOTTARGET}${REAL_HOME}
+                # Make sure we don't mount twice
+                grep -q "${CHROOTTARGET}/proc " /proc/mounts || mount -t proc proc ${CHROOTTARGET}/proc
+                grep -q "${CHROOTTARGET}/sys " /proc/mounts || mount -t sysfs sys ${CHROOTTARGET}/sys
+                grep -q "${CHROOTTARGET}/dev " /proc/mounts || mount -o bind /dev ${CHROOTTARGET}/dev
+                grep -q "${CHROOTTARGET}/dev/pts " /proc/mounts || mount -o bind /dev/pts ${CHROOTTARGET}/dev/pts
+                
+                mkdir -p "${CHROOTTARGET}${REAL_HOME}"
+                grep -q "${CHROOTTARGET}${REAL_HOME} " /proc/mounts || mount -o bind ${REAL_HOME} ${CHROOTTARGET}${REAL_HOME}
 
-            # Setup Gitlab and dependencies
-            chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh
-            echo "All done!"
+                # Setup Gitlab and dependencies
+                chroot ${CHROOTTARGET}/ /bin/bash /bootstrap.sh
+                echo "All done!"
 
-            touch ${INSTALL_DIR}/var/installed
-        ) > ${INSTALL_DIR}/var/install.log 2>&1
+                touch ${INSTALL_DIR}/var/installed
+            ) > ${INSTALL_DIR}/var/install.log 2>&1
 
-        # Unmount
-        umount ${CHROOTTARGET}/dev/pts
-        umount ${CHROOTTARGET}/dev
-        umount ${CHROOTTARGET}/sys
-        umount ${CHROOTTARGET}/proc
-        umount ${CHROOTTARGET}${REAL_HOME}
+            # Unmount
+            umount ${CHROOTTARGET}/dev/pts
+            umount ${CHROOTTARGET}/dev
+            umount ${CHROOTTARGET}/sys
+            umount ${CHROOTTARGET}/proc
+            umount ${CHROOTTARGET}${REAL_HOME}
+        ) &
     fi
 
     exit 0
@@ -102,8 +106,10 @@ postinst ()
 preuninst ()
 {
     # Not really necessary but here as a precaution.
-    source ${VARIABLES_FILE}
-    umount ${CHROOTTARGET}${GITLAB_USER_HOME}
+    if [ -f ${VARIABLES_FILE} ]; then
+        source ${VARIABLES_FILE}
+        umount ${CHROOTTARGET}${GITLAB_USER_HOME}
+    fi
     exit 0
 }
 
