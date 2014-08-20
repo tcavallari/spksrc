@@ -5,7 +5,7 @@ SPK_ICON = src/gitlab.png
 DSM_UI_DIR = app
 
 DEPENDS  = cross/redis cross/ruby
-SPK_DEPENDS = 
+SPK_DEPENDS = "MailServer"
 
 MAINTAINER = SynoCommunity
 DESCRIPTION = GitLab Community Edition \(CE\) is open source software to collaborate on code. Create projects and git repositories, manage access and do code reviews. GitLab CE is on-premises software that you can install and use on your server\(s\).
@@ -16,6 +16,9 @@ CHANGELOG = ""
 HOMEPAGE   = https://about.gitlab.com/
 LICENSE    =
 HELPURL    = http://synocommunity.com/help/gitlab
+
+INSTALL_DEP_SERVICES = apache-web
+START_DEP_SERVICES = apache-web MailServer
 
 WIZARDS_DIR = src/wizard/
 INSTALLER_SCRIPT = src/installer.sh
