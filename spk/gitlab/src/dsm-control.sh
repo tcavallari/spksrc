@@ -30,7 +30,7 @@ start_daemon ()
         chroot ${CHROOTTARGET}/ service nginx start
 
         cp ${CHROOTTARGET}/etc/gitlab/gitlab-httpd-proxy.conf /etc/httpd/sites-enabled-user/gitlab-httpd-proxy.conf
-        httpd -k restart
+        httpd -k graceful
     fi
 }
 
@@ -38,7 +38,7 @@ stop_daemon ()
 {
     # Stop running services
     rm -f /etc/httpd/sites-enabled-user/gitlab-httpd-proxy.conf
-    httpd -k restart
+    httpd -k graceful
 
     chroot ${CHROOTTARGET}/ service nginx stop
     chroot ${CHROOTTARGET}/ service gitlab stop
